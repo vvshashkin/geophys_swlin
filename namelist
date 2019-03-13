@@ -1,19 +1,19 @@
 $prm
 NLON=240,
 NLAT=120,
-NSTEP = 96,
-NZAP = 2,
-DT = 1800.,
+NSTEP = 360,
+NZAP = 1,
+DT = 900.,
 $end
 
 $cst
 href=2000.
-omega=0.,
+omega=7d-5,
 lbeta=.false.,
 $end
 
 $ini
 lam0 = 270.,
-phi0 = 0.,
+phi0 = 25.,
 rhill = 2000d3,
 $end

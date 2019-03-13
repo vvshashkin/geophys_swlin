@@ -50,28 +50,40 @@ close(13)
 
 rdfi = pi/NLAT
 rdlam = 2._8*pi/NLON
-lbeta = .false.
 end subroutine init_prmt
 end module prmt
 
 module gem
 implicit none
 real(8), allocatable :: ds(:), rf(:)
+real(8), allocatable :: fcoriu(:), fcoriv(:)
 
 contains
 subroutine init_gem
 use prmt, only: NLON,NLAT, rdfi, rdlam
-use const, only: pi
+use const, only: pi, omega, lbeta
 integer j
 allocate(ds(1:NLAT))
 allocate(rf(0:NLAT))
+allocate(fcoriu(1:NLAT))
+allocate(fcoriv(0:NLAT))
 
 do j=1,NLAT
   ds(j) = cos(-.5_8*pi+(j-.5_8)*rdfi)
+  if(lbeta) then
+    fcoriu(j) = 2._8*omega*sin(-.5_8*pi+(j-.5_8)*rdfi)
+  else
+    fcoriu(j) = 2._8*omega
+  endif
 end do
 
 do j=0,NLAT
   rf(j) = cos(-.5_8*pi+j*rdfi)
+  if(lbeta) then
+    fcoriv(j) = 2._8*omega*sin(-.5_8*pi+j*rdfi)
+  else
+    fcoriv(j) = 2._8*omega
+  endif
 end do
 
 end subroutine init_gem

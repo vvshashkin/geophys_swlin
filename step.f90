@@ -96,13 +96,20 @@ end do
 v(:,0) = 0._8
 do j=1, NLAT-1
   do i=0,NLON-1
-    v(i,j) =-grav*(h1(i,j+1)-h1(i,j))/(rdfi*RADZ)
+    v(i,j) =-grav*(h1(i,j+1)-h1(i,j))/(rdfi*RADZ)-.25_8*(fcoriu(j+1)*(u1(i+1,j+1)+u1(i,j+1))+fcoriu(j)*(u1(i+1,j)+u1(i,j)))
   end do
 end do
 v(:,NLAT) = 0._8
+!v-boundary conditions for coriollis
+v1(0:NLON/2-1,0) = .5_8*(v1(0:NLON/2-1,1)-v1(NLON/2:NLON-1,1))
+v1(NLON/2:NLON-1,0) = -v1(0:NLON/2-1,0)
+v1(NLON,0) = v1(0,0)
+v1(0:NLON/2-1,NLAT) = .5_8*(v1(0:NLON/2-1,NLAT-1)-v1(NLON/2:NLON-1,NLAT-1))
+v1(NLON/2:NLON-1,NLAT) = -v1(0:NLON/2-1,NLAT)
+v1(NLON,NLAT) = v1(0,NLAT)
 do j=1, NLAT
   do i=1,NLON
-    u(i,j) =-grav*(h1(i,j)-h1(i-1,j))/(rdlam*RADZ*ds(j))
+    u(i,j) =-grav*(h1(i,j)-h1(i-1,j))/(rdlam*RADZ*ds(j))+.25_8*(fcoriv(j)*(v1(i,j)+v1(i-1,j))+fcoriv(j-1)*(v1(i,j-1)+v1(i-1,j-1)))
   end do
 end do
 
