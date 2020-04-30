@@ -12,12 +12,25 @@ use fld
 use gem
 implicit none
 integer irec, it
-call init_const
-call init_prmt
-call init_fld
+character(:), allocatable :: namfname
+integer nargs, arg_len
+
+nargs = command_argument_count()
+if(nargs >= 1) then
+    call get_command_argument(1, length=arg_len)
+    allocate(character(arg_len) :: namfname)
+    call get_command_argument(1, namfname)
+else
+    namfname = "namelist"
+end if
+print *, "namelist: ", namfname
+
+call init_const(namfname)
+call init_prmt(namfname)
+call init_fld(namfname)
 call init_gem
 
-open(117,file="f.dat", access="direct",recl=NLON*NLAT)
+open(117,file="f.dat", access="direct",recl=4*NLON*NLAT)
 call wrfld(h,u,v, 1, 117)
 irec=2
 

@@ -8,15 +8,16 @@ real(8) omega
 logical lbeta
 
 contains
-subroutine init_const
-namelist /cst/ href, omega, lbeta
+subroutine init_const(namfname)
 implicit none
+namelist /cst/ href, omega, lbeta
+character(*) namfname
 
 HREF = 3000._8
 omega= 0._8
 lbeta = .false.
 
-open(13, file="namelist", form = "formatted")
+open(13, file=namfname, form = "formatted")
 read(13, cst)
 close(13)
 
@@ -33,10 +34,11 @@ real(8) dt
 real(8) rdfi, rdlam
 
 contains
-subroutine init_prmt
+subroutine init_prmt(namfname)
 use const
-namelist /prm/ NLON,NLAT,NSTEP,NZAP,dt
 implicit none
+namelist /prm/ NLON,NLAT,NSTEP,NZAP,dt
+character(*) namfname
 
 NLAT = 120
 NLON = 240
@@ -44,7 +46,7 @@ dt = 1800._8
 NSTEP = 96
 NZAP = 2
 
-open(13, file="namelist", form = "formatted")
+open(13, file=namfname, form = "formatted")
 read(13, prm)
 close(13)
 
@@ -96,24 +98,26 @@ real(8), allocatable :: u(:,:)
 real(8), allocatable :: v(:,:)
 
 contains
-subroutine init_fld
+subroutine init_fld(namfname)
 use prmt
+character(*) namfname
 allocate(h(0:NLON,NLAT))
 allocate(u(0:NLON,NLAT))
 allocate(v(0:NLON,0:NLAT))
 
-call initial_cond(h, v, u)
+call initial_cond(h, v, u, namfname)
 
 end subroutine init_fld
 
-subroutine initial_cond(h, u, v)
+subroutine initial_cond(h, u, v, namfname)
 use const
 use prmt
-namelist /ini/ phi0, lam0, rhill, hill_type
 implicit none
+namelist /ini/ phi0, lam0, rhill, hill_type
 real(8) h(0:NLON,NLAT)
 real(8) u(0:NLON,NLAT)
 real(8) v(0:NLON,0:NLAT)
+character(*) namfname
 !test parameters:
 real(8) phi0, lam0
 real(8), parameter :: hmax = 1._8
@@ -128,7 +132,7 @@ phi0 = 45._8; lam0 = 90._8
 rhill = 1000.e3_8
 hill_type="gauss"
 
-open(13, file="namelist", form = "formatted")
+open(13, file=namfname, form = "formatted")
 read(13, ini)
 close(13)
 lam0 = lam0/180.*pi

@@ -1,0 +1,19 @@
+$prm
+NLON=240,
+NLAT=120,
+NSTEP = 360,
+NZAP = 1,
+DT = 900.,
+$end
+
+$cst
+href=2000.
+omega=0d0,
+lbeta=.false.,
+$end
+
+$ini
+lam0 = 270.,
+phi0 = 30.,
+rhill = 2000d3,
+$end
