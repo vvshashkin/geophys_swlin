@@ -109,7 +109,7 @@ end subroutine init_fld
 subroutine initial_cond(h, u, v)
 use const
 use prmt
-namelist /ini/ phi0, lam0, rhill
+namelist /ini/ phi0, lam0, rhill, hill_type
 implicit none
 real(8) h(0:NLON,NLAT)
 real(8) u(0:NLON,NLAT)
@@ -118,13 +118,15 @@ real(8) v(0:NLON,0:NLAT)
 real(8) phi0, lam0
 real(8), parameter :: hmax = 1._8
 real(8) rhill
+character(256) :: hill_type
 !local vars
 integer i, j
 real(8) phi, lam
-real(8) zx, zy, zz, zx0, zy0, zz0
+real(8) zx, zy, zz, zx0, zy0, zz0, zr
 
 phi0 = 45._8; lam0 = 90._8
 rhill = 1000.e3_8
+hill_type="gauss"
 
 open(13, file="namelist", form = "formatted")
 read(13, ini)
@@ -145,8 +147,26 @@ do j = 1, NLAT
     zx = cos(phi)*cos(lam)
     zy = cos(phi)*sin(lam)
     zz = sin(phi)
-    !h(i,j) = hmax*max(0._8,1._8-radz*acos(zx0*zx+zy0*zy+zz0*zz)/rhill)
-    h(i,j) = hmax*exp(-(radz*acos(zx0*zx+zy0*zy+zz0*zz)/rhill)**2)
+    if(trim(hill_type)=="gauss") then
+      h(i,j) = hmax*exp(-(radz*acos(zx0*zx+zy0*zy+zz0*zz)/rhill)**2)
+    else if(trim(hill_type)=="cone") then
+      h(i,j) = hmax*max(0._8,1._8-radz*acos(zx0*zx+zy0*zy+zz0*zz)/rhill)
+    else if(trim(hill_type)=="cylinder") then
+      if(acos(zx0*zx+zy0*zy+zz0*zz)<=rhill/radz) then
+        h(i,j) = hmax
+      else
+        h(i,j) = 0._8
+      end if
+    else if(trim(hill_type)=="cosbell") then
+      zr = radz*acos(zx0*zx+zy0*zy+zz0*zz)
+      if(zr<=rhill) then
+        h(i,j) = hmax*.5_8*(1._8+cos(pi*zr/rhill))
+      else
+        h(i,j) = 0._8
+      end if
+    else
+      print *, "unknown type of initial height distribution ", trim(hill_type)
+    end if
   end do
 end do
 

@@ -46,7 +46,7 @@ h(NLON,:) = h(0,:)
 v(:,NLAT) = 0._8; v(:,0) = 0._8
 v(NLON,:) = v(0,:)
 
-print *, "exp solver:", iter, " iterations, residual ~", zeps, zeps0
+print *, "exp solver:", iter, " iterations, residual ~", zeps!, zeps0
 
 end subroutine step
 

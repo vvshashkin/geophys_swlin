@@ -26,7 +26,7 @@ do it=1, NSTEP
   if(mod(it,NZAP)==0) then
     call wrfld(h,u,v,irec,117)
     print *, "fields record ",irec, "written"
-    print *, maxval(h), minval(h)
+    print *, "h_max=", maxval(h), "h_min=", minval(h)
     irec = irec+1
   end if
 end do
