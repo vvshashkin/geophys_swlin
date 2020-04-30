@@ -21,7 +21,7 @@ if(nargs >= 1) then
     allocate(character(arg_len) :: namfname)
     call get_command_argument(1, namfname)
 else
-    namfname = "namelist"
+    namfname = "namelist.igw"
 end if
 print *, "namelist: ", namfname
 
