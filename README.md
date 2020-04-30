@@ -93,5 +93,11 @@ $end
 Using [GRADS](http://cola.gmu.edu/grads/) is recomended. CTL-file f.ctl for grads is included in the model code.
 
 ## Model description
-to come in additional pdf file
+The model solves the following system of equations:
 
+<img src="https://render.githubusercontent.com/render/math?math=\frac{\partial\vec{v}}{\partial t}=-g\nabla h-f k \times \vec{v},">
+<img src="https://render.githubusercontent.com/render/math?math=\frac{\partial h}{\partial t}=-H_{0}\nabla \cdot \vec{v},">
+
+where <img src="https://render.githubusercontent.com/render/math?math=\vec{v}"> is the horizontal wind vector, <img src="https://render.githubusercontent.com/render/math?math=h"> is fluid layer height perturbation, <img src="https://render.githubusercontent.com/render/math?math=H_0"> is the background (mean) fluid layer height.
+
+We use 2-nd order accurate formulae for discretization of gradient and divergence operators on the regular latitude-longitude grid. C-staggered grid is used. Additional longitudinal filter (smoother) is applied to the fields in the polar latitudes to avoid instability. Matrix exponential method is used for time-integration. 
